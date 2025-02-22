@@ -16,7 +16,7 @@ export default function Sidebar({ setShowForm }) {
           <FaCalendarAlt /> <span>Add To Inventory</span>
         </a>
         <a href="#" className="flex items-center space-x-2 p-3 rounded hover:bg-blue-700">
-          <FaUser /> <span>Doctors</span>
+          <FaUser /> <span>Patient</span>
         </a>
       </nav>
     </aside>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import OverviewCards from "./OverviewCards";
@@ -10,13 +10,43 @@ import AddInventoryForm from "./AddInventoryForm";
 export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [medicines, setMedicines] = useState([
-    { id: 1, name: "Paracetamol", brandName: "Brand A", dosage: "500mg", unitPrice: 10, stock: 50, status: "Available" },
-    { id: 2, name: "Ibuprofen", brandName: "Brand B", dosage: "400mg", unitPrice: 15, stock: 0, status: "Out of Stock" },
-    { id: 3, name: "Amoxicillin", brandName: "Brand C", dosage: "250mg", unitPrice: 20, stock: 20, status: "Available" },
+    { id: 1, medicine_name: "Paracetamol", brand_name: "Brand A", dosage: "500mg", unitPrice: 10, stock: 50, status: "Available" },
+    { id: 2, medicine_name: "Ibuprofen", brand_name: "Brand B", dosage: "400mg", unitPrice: 15, stock: 0, status: "Out of Stock" },
+    { id: 3, medicine_name: "Amoxicillin", brand_name: "Brand C", dosage: "250mg", unitPrice: 20, stock: 20, status: "Available" },
   ]);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const getEmail = localStorage.getItem('email')
+      const formData = {
+        email : getEmail
+      }
+      try {
+        const response = await fetch("http://localhost:8080/inventory/getByEmail", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+  
+        const data = await response.json(); // Parse JSON response
+        console.log("Fetched Data:", data);
+        setMedicines(data); // Update state with fetched medicines
+      } catch (err) {
+        console.log("Error: " + err.message);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
   const handleIncreaseStock = (id) => {
     setMedicines((prev) =>
